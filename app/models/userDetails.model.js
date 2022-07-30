@@ -16,7 +16,14 @@ const UserDetails = mongoose.model(
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
        }
-     ]
+     ],
+     posts: [
+      {
+       type: mongoose.Schema.Types.ObjectId,
+       ref: "Post"
+      }
+    ]
+
   })
 );
 

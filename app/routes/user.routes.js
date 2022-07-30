@@ -12,7 +12,8 @@ module.exports = function(app) {
 
   app.get("/api/test/all", controller.allAccess);
   app.get("/api/users/all", controller.getAll);
-  app.get("/api/user/:id", controller.getUser);
+  app.get("/api/userDetails/:id", controller.getUserDetails);
+  
   app.put("/api/addFriend/:id", controller.addFriend);
 
   app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);

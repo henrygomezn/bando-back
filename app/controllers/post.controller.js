@@ -1,6 +1,7 @@
 const config = require("../config/auth.config");
 const db = require("../models");
 const Post = db.post;
+const UserDetails = db.userDetails;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -23,11 +24,21 @@ exports.createPost = (req, res) => {
       return;
     }
 
-    res.json({
-      ok: true,
-      post: postDB
-  });
+    UserDetails.findOneAndUpdate({ userId: postDB.userId},{ $push: { posts: postDB } },{new: true}, (err,userDetailsDB) => {
+      if (err) {
+          return res.status(400).json({
+              ok: false,
+              err: "Error al procesar la petición"
+          });
+      }
 
+      res.json({
+        ok: true,
+        post: postDB
+    });
+     
+
+  })
 
   });
 };
@@ -67,6 +78,57 @@ exports.getAll =  (req, res) => {
       });
 };
 
+exports.getPost =  (req, res) => {
+
+  let id = req.params.id;
+
+  Post.findOne({_id: id}).populate("comments").exec((err, postDB) => {
+          if (err) {
+              return res.status(400).json({
+                  ok: false,
+                  err: "Error al procesar la petición"
+              });
+          }
+          res.json(postDB);
+      });
+};
+
+
+exports.addLike =  (req, res) => {
+
+  let id = req.params.id;
+
+
+  Post.findOne({ _id: id},  (err, originalPost) => {
+      if (err) {
+          return res.status(400).json({
+              ok: false,
+              err: "Error al procesar la petición1"
+          });
+      }
+
+
+      Post.findOneAndUpdate({ _id: id},{likes: originalPost.likes+1 },{new: true},  (err,postDB) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err: "Error al procesar la petición2"
+            });
+        }
+    
+            res.json({
+                ok: true,
+                msg: "add like!"
+            });
+    
+    })
+
+  });
+
+
+
+};
+
 exports.getPostUser =  (req, res) => {
   let id = req.params.id;
 
@@ -80,6 +142,25 @@ exports.getPostUser =  (req, res) => {
                   err: "Error al procesar la petición"
               });
           }
+          res.json(postsDB);
+      });
+};
+
+
+exports.getPostRanking =  (req, res) => {
+
+  Post.find({})
+      .sort({ likes: -1 })
+      .limit(3)
+      .exec((err, postsDB) => {
+          if (err) {
+              return res.status(400).json({
+                  ok: false,
+                  err: "Error al procesar la petición"
+              });
+          }
+
+
           res.json(postsDB);
       });
 };

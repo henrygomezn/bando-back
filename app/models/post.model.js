@@ -23,3 +23,4 @@ const Post = mongoose.model(
 );
 
 module.exports = Post;
+
