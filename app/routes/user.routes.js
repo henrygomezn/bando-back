@@ -12,7 +12,9 @@ module.exports = function(app) {
 
   app.get("/api/test/all", controller.allAccess);
   app.get("/api/users/all", controller.getAll);
+  app.post("/api/userSearch", controller.getSearchUsername);
   app.get("/api/userDetails/:id", controller.getUserDetails);
+  app.put("/api/imgAvatarChange/:id", controller.changeAvatar);
   
   app.put("/api/addFriend/:id", controller.addFriend);
 

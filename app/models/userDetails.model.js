@@ -11,6 +11,7 @@ const UserDetails = mongoose.model(
       createDate: Number,
       username: String,
       referalCode: String,
+      imgAvatarBase64: String,
      friends: [
        {
         type: mongoose.Schema.Types.ObjectId,

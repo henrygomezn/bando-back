@@ -71,3 +71,42 @@ exports.addFriend = (req, res) => {
 
 };
 
+
+exports.getSearchUsername = async (req, res) => {
+ 
+
+  let usernameSearch = req.body.usernameSearch;
+
+  const docs = await UserDetails.find({ username: { $regex: usernameSearch } });
+
+  if(docs.length > 0){
+    console.log("entra")
+    res.status(200).json(docs)
+  }
+ else{
+  console.log("no entra")
+  res.status(400).json(docs)
+ }
+
+};
+
+
+exports.changeAvatar = (req, res) => {
+  let id = req.params.id;
+  let imgBase64 = req.body.imgAvatarBase64;
+
+
+ UserDetails.findOneAndUpdate({userId: id},{ $set: { imgAvatarBase64: imgBase64 } }, { new: true } ).exec((err, userDetailsDB) => {
+      if (err) {
+          return res.status(400).json({
+              ok: false,
+              err: "Error al procesar la petición"
+          });
+      }
+   
+      res.json(userDetailsDB);
+  })
+
+};
+
+
