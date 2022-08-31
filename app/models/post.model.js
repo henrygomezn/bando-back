@@ -8,6 +8,8 @@ const Post = mongoose.model(
     likes: Number,
     contComments: Number,
     createDate: Number,
+    imgAvatar: String,
+    imgContent:String,
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,

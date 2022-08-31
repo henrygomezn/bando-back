@@ -37,7 +37,8 @@ exports.moderatorBoard = (req, res) => {
 exports.getUserDetails =  (req, res) => {
   let id = req.params.id;
   UserDetails.findOne({userId : id})
-  .populate("posts")
+  .populate({path:'posts', options:{sort:{'createDate':-1}}})
+
       .exec((err, userDB) => {
           if (err) {
               return res.status(400).json({

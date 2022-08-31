@@ -45,6 +45,7 @@ require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/post.routes")(app);
 require("./app/routes/comment.routes")(app);
+require("./app/routes/referalCode.routes")(app);
 
 
 // set port, listen for requests

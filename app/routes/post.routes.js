@@ -12,6 +12,7 @@ module.exports = function(app) {
 
   app.post("/api/post", controller.createPost);
   app.get("/api/posts", controller.getAll);
+  app.get("/api/lastPost", controller.getLastPost);
   app.get("/api/postRanking", controller.getPostRanking);
   app.get("/api/userPost/:id", controller.getPostUser);
   app.delete("/api/post/:id", controller.deletePost);

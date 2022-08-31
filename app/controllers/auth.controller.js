@@ -3,10 +3,33 @@ const db = require("../models");
 const User = db.user;
 const UserDetails = db.userDetails;
 const Role = db.role;
+const ReferalCode = db.referalCode;
+var fs = require('fs');
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const { userBoard } = require("./user.controller");
+
+
+const base64_encode = (file) => {
+  // read binary data
+  var bitmap = fs.readFileSync(file);
+  // convert binary data to base64 encoded string
+  return new Buffer(bitmap).toString('base64');
+}
+
+const generateRandomString = (num) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result1 = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < num; i++) {
+    result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  return result1;
+}
+
+
 
 exports.signup = (req, res) => {
   const user = new User({
@@ -16,21 +39,7 @@ exports.signup = (req, res) => {
   });
 
 
-  const  generateRandomString = (num) => {
-    const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result1= '';
-    const charactersLength = characters.length;
-    for ( let i = 0; i < num; i++ ) {
-        result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
 
-    return result1;
-}
-
-const displayRandomString = () =>{
-   let randomStringContainer = document.getElementById('random_string'); 
-    randomStringContainer.innerHTML =  generateRandomString(8);    
-}
 
   user.save((err, user) => {
     if (err) {
@@ -50,31 +59,60 @@ const displayRandomString = () =>{
           }
 
           user.roles = roles.map(role => role._id);
-          user.save((err,userDB)  => {
+          user.save((err, userDB) => {
             if (err) {
               res.status(500).send({ message: err });
               return;
             }
-        
-
-    
-          const userDetails = new UserDetails({
-            userId: userDB._id,
-            username: userDB.username,
-            referalCode: generateRandomString(8),
-            createDate: Date.now()
-          });
 
 
-        userDetails.save((err,userDetailsDB) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
 
-          res.send({ message: "User was registered successfully!" });
+            const referal = new ReferalCode({
+              contUse: 0,
+              code: generateRandomString(8),
+              user_id: req.body.userId,
+              createDate: Date.now(),
+            });
 
-        })
+            console.log(referal)
+
+            referal.save((err, referalDB) => {
+              if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+
+
+              const userDetails = new UserDetails({
+                userId: userDB._id,
+                username: userDB.username,
+                referalCode: referalDB.code,
+                createDate: Date.now(),
+                imgAvatarBase64: "data:image/png;base64," +  base64_encode("C:/Users/henry/OneDrive/Documentos/GitHub/bando-back/app/assets/default-img.jpg")
+                
+              });
+
+
+              userDetails.save((err, userDetailsDB) => {
+                if (err) {
+                  res.status(500).send({ message: err });
+                  return;
+                }
+
+                res.send({ message: "User was registered successfully!" });
+
+              })
+
+
+
+
+
+            });
+
+
+
+
+
 
           });
         }
@@ -87,31 +125,54 @@ const displayRandomString = () =>{
         }
 
         user.roles = [role._id];
-        user.save((err,userDB) => {
+        user.save((err, userDB) => {
           if (err) {
             res.status(500).send({ message: err });
             return;
           }
 
-          console.log(userDB)
  
-          const userDetails = new UserDetails({
-            userId: userDB._id,
-            username: userDB.username,
-            referalCode: generateRandomString(8),
-            createDate: Date.now()
+          const referal = new ReferalCode({
+            contUse: 0,
+            code: generateRandomString(8),
+            user_id: req.body.userId,
+            createDate: Date.now(),
+          });
+
+          console.log(referal)
+
+          referal.save((err, referalDB) => {
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+            }
+
+            const userDetails = new UserDetails({
+              userId: userDB._id,
+              username: userDB.username,
+              referalCode: referalDB.code,
+              createDate: Date.now()
+            });
+
+
+            userDetails.save((err, userDetailsDB) => {
+              if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+
+              res.send({ message: "User was registered successfully!" });
+
+            })
+
+
+
+
+
           });
 
 
-        userDetails.save((err,userDetailsDB) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
 
-          res.send({ message: "User was registered successfully!" });
-
-        })
         });
       });
     }

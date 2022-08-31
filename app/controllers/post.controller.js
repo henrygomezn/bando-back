@@ -11,6 +11,8 @@ exports.createPost = (req, res) => {
     content: req.body.content,
     username: req.body.username,
     userId: req.body.userId,
+    imgAvatar: req.body.imgAvatar,
+    imgContent: req.body.imgContent,
     createDate: Date.now(),
     likes: 0,
     contComments: 0
@@ -77,6 +79,23 @@ exports.getAll =  (req, res) => {
           res.json(postsDB);
       });
 };
+
+exports.getLastPost =  (req, res) => {
+    Post.find({})
+        .sort({ createDate: -1 })
+        .limit(10)
+        .exec((err, postsDB) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    err: "Error al procesar la petición"
+                });
+            }
+            res.json(postsDB);
+        });
+  };
+  
+
 
 exports.getPost =  (req, res) => {
 
