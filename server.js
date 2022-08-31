@@ -22,7 +22,7 @@ const db = require("./app/models");
 const Role = db.role;
 
 db.mongoose
-  .connect(`mongodb+srv://admin:admin@bandobd.cuuxkjl.mongodb.net/?retryWrites=true&w=majority`, {
+  .connect(`mongodb+srv://admin:admin@dbando.40wsf7c.mongodb.net/?retryWrites=true&w=majority`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
