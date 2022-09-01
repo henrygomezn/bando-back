@@ -88,7 +88,7 @@ exports.signup = (req, res) => {
                 username: userDB.username,
                 referalCode: referalDB.code,
                 createDate: Date.now(),
-                imgAvatarBase64: "data:image/png;base64," +  base64_encode("C:/Users/henry/OneDrive/Documentos/GitHub/bando-back/app/assets/default-img.jpg")
+                imgAvatarBase64: ""
                 
               });
 
@@ -140,6 +140,7 @@ exports.signup = (req, res) => {
           });
 
           console.log(referal)
+          console.log(path)
 
           referal.save((err, referalDB) => {
             if (err) {
